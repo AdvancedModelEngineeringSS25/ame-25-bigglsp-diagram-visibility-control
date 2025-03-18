@@ -1,0 +1,57 @@
+plugins {
+    id 'eclipse'
+    id 'java-library'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = "com.borkdominik.big"
+version = "0.1.0"
+
+dependencies {
+    implementation("org.eclipse.emf:org.eclipse.emf.common:2.31.0")
+    implementation("org.eclipse.emf:org.eclipse.emf.ecore:2.38.0")
+    implementation("org.eclipse.emfcloud:emfjson-jackson:2.2.0")
+    implementation("org.eclipse.glsp:org.eclipse.glsp.server:2.3.0")
+    implementation("org.eclipse.glsp:org.eclipse.glsp.server.emf:2.3.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.19.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.19.0")
+    implementation("com.google.inject.extensions:guice-assistedinject:7.0.0")
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'com.borkdominik.big.glsp.server'
+            from components.java 
+        }
+    }
+} 
+
+java {
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+eclipse {
+    classpath {
+        baseSourceOutputDir = file('build')
+    }
+}
+
+
+tasks.register("prepare") {
+    group = "bigUML"
+    description = "Clean, Compile and Publish to Maven Local"
+    dependsOn clean
+    dependsOn build
+    dependsOn publishToMavenLocal
+    doLast {
+        println("bigGLSP Server Framework is ready to consume.")
+    }
+}
